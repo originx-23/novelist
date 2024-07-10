@@ -26,12 +26,13 @@ def generate_text():
 
         # 创建并启动线程
         thread = Thread(target=generate_text_thread, args=(prompt,))
+        threads.append(thread)
         thread.start()
 
 # 生成文本的线程函数
 def generate_text_thread(prompt):
     start_time = time.time()
-    result = nlp(prompt, max_length=200, truncation=False)  # 指定生成文本的最大长度
+    result = nlp(prompt, max_length=2000, truncation=False)  # 指定生成文本的最大长度
     end_time = time.time()
     duration = end_time - start_time
 
@@ -48,11 +49,22 @@ def copy_text():
         messagebox.showinfo("信息", "文本已复制到剪贴板")
         output_text.delete("1.0", tk.END)
 
+# 自定义关闭事件处理程序
+def on_closing():
+    if messagebox.askokcancel("退出", "你确定要退出吗?"):
+        for thread in threads:
+            if thread.is_alive():
+                thread.join()  # 等待线程完成
+        root.destroy()
+
 # 创建主窗口
 root = tk.Tk()
 root.title("文本生成器")
 root.geometry('600x600')
 root.configure(bg='#f0f0f0')
+
+# 捕捉窗口关闭事件
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 # 创建输入框
 input_frame = tk.Frame(root, bg='#f0f0f0', padx=10, pady=10)
@@ -85,6 +97,9 @@ generate_button.pack(side=tk.LEFT, padx=20)
 
 copy_button = tk.Button(button_frame, text="复制", command=copy_text, width=20, bg='#008CBA', fg='white')
 copy_button.pack(side=tk.RIGHT, padx=20)
+
+# 存储线程的列表
+threads = []
 
 # 运行主循环
 root.mainloop()

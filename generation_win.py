@@ -17,6 +17,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 # 创建一个 pipeline，用于文本生成
 nlp = pipeline("text-generation", model=model, tokenizer=tokenizer, device=0 if device == "cuda" else -1)
 
+
 # 生成文本的函数 (多线程调用)
 def generate_text():
     prompt = input_text.get("1.0", tk.END).strip()
@@ -29,10 +30,11 @@ def generate_text():
         threads.append(thread)
         thread.start()
 
+
 # 生成文本的线程函数
 def generate_text_thread(prompt):
     start_time = time.time()
-    result = nlp(prompt, max_length=2000, truncation=False)  # 指定生成文本的最大长度
+    result = nlp(prompt, max_length=500, truncation=False)  # 指定生成文本的最大长度
     end_time = time.time()
     duration = end_time - start_time
 

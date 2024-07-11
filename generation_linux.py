@@ -9,12 +9,11 @@ print(f"Using device: {device}")
 
 # 模型和分词器的加载
 model_name = "NeuralNovel/Mistral-7B-Instruct-v0.2-Neural-Story"
-model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
+model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16).to(device)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 # 创建一个 pipeline，用于文本生成
 nlp = pipeline("text-generation", model=model, tokenizer=tokenizer, device=0 if device == "cuda" else -1)
-
 
 # 对话循环
 def main():
@@ -47,7 +46,6 @@ def main():
         # 显示生成结果和时间
         print(f"模型: {result[0]['generated_text']}")
         print(f"生成时间: {duration:.2f} 秒\n")
-
 
 if __name__ == "__main__":
     main()

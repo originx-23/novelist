@@ -2,6 +2,12 @@ import time
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
 from tqdm import tqdm
+import sys
+import locale
+
+# 确保使用正确的编码
+sys.stdin.reconfigure(encoding='utf-8')
+sys.stdout.reconfigure(encoding='utf-8')
 
 # 检查CUDA是否可用，并选择设备
 device = "cuda" if torch.cuda.is_available() else "cpu"
